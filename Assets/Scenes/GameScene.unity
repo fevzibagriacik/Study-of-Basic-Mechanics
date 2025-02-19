@@ -764,7 +764,6 @@ MonoBehaviour:
   canFire: 0
   timer: 0
   shootCooldown: 0
-  bulletSpeed: 5
 --- !u!61 &783676031
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1441,7 +1440,7 @@ GameObject:
   - component: {fileID: 1912091583}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1463,7 +1462,7 @@ MonoBehaviour:
   checkRadius: 0.2
   wallCheckRadius: 0.1
   wallJumpForce: 10
-  wallSlidingSpeed: 0.4
+  wallSlidingSpeed: 1
   wallJumpingTime: 0.2
   wallJumpingCounter: 0
   wallJumpingDuration: 0.4
@@ -1491,7 +1490,6 @@ MonoBehaviour:
   canFire: 0
   timer: 0
   shootCooldown: 1
-  bulletSpeed: 5
 --- !u!50 &1912091579
 Rigidbody2D:
   serializedVersion: 4
