@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
+    private SpriteRenderer sr;
 
     public float moveSpeed = 1500;
     private float moveInput;
@@ -43,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
@@ -69,6 +71,8 @@ public class PlayerController : MonoBehaviour
         IsGrounded();
 
         Move();
+
+        Flip();
 
         Jump();
 
@@ -175,5 +179,19 @@ public class PlayerController : MonoBehaviour
     public bool IsWalled()
     {
         return Physics2D.OverlapCircle(wallCheck.position, wallCheckRadius, wallLayer);
+    }
+
+    public void Flip()
+    {
+        if(moveInput > 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+            sr.flipX = true;
+        }
+        else if(moveInput < 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+            sr.flipX = false;
+        }
     }
 }
