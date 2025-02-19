@@ -8,8 +8,11 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer sr;
 
+    [Header("Move Settings")]
     public float moveSpeed = 1500;
     private float moveInput;
+
+    [Header("Jump Settings")]
     public float jumpForce;
     public float checkRadius = 0.3f;
     public float wallCheckRadius = 0.3f;
@@ -18,33 +21,38 @@ public class PlayerController : MonoBehaviour
     public float wallJumpingTime = 0.2f;
     public float wallJumpingCounter;
     public float wallJumpingDuration = 0.4f;
+    [SerializeField] int jumpCount = 0;
+    [SerializeField] bool isGrounded;
+    [SerializeField] bool isWallSliding;
+    [SerializeField] bool isWallJumping;
+    public Transform groundCheck;
+    public Transform wallCheck;
+    public LayerMask groundLayer;
+    public LayerMask wallLayer;
+    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+
+    [Header("Dash Settings")]
     public float dashPower = 24f;
     public float dashTime = 0.2f;
     public float dashingCooldown = 1f;
     public float direction;
-
-    [SerializeField] int jumpCount = 0;
-
-    [SerializeField] bool isGrounded;
-    [SerializeField] bool isWallSliding;
-    [SerializeField] bool isWallJumping;
     [SerializeField] bool canDash = true;
     [SerializeField] bool isDashing;
-
-    public Transform groundCheck;
-    public Transform wallCheck;
-
-    public LayerMask groundLayer;
-    public LayerMask wallLayer;
-
-    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
-
     [SerializeField] private TrailRenderer tr;
 
+    [Header("Shoot Settings")]
+    private Vector3 mousePos;
+    private Camera mainCam;
+    public GameObject bullet;
+    public Transform bulletTransform;
+    public bool canFire;
+    public float timer;
+    public float shootCooldown;
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
     }
 
     private void Update()
@@ -68,6 +76,16 @@ public class PlayerController : MonoBehaviour
             jumpCount = 0;
         }
 
+        if (!canFire)
+        {
+            timer += Time.deltaTime;
+            if(timer > shootCooldown)
+            {
+                canFire = true;
+                timer = 0f;
+            }
+        }
+
         IsGrounded();
 
         Move();
@@ -86,6 +104,10 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(Dash());
         }
+
+        //RotateBulletTransform();
+
+        Shoot();
     }
 
     public void Move()
@@ -192,6 +214,22 @@ public class PlayerController : MonoBehaviour
         {
             transform.localScale = new Vector3(1, 1, 1);
             sr.flipX = false;
+        }
+    }
+
+    public void RotateBulletTransform()
+    {
+        mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 rotation = mousePos - transform.position;
+        float rotZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, rotZ);
+    }
+
+    public void Shoot()
+    {
+        if(canFire && Input.GetMouseButtonDown(0))
+        {
+            Instantiate(bullet, bulletTransform.position, Quaternion.identity);
         }
     }
 }
